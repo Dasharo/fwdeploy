@@ -1,0 +1,3 @@
+DOCKER_USER_NAME="dasharo"
+DOCKER_IMAGE_NAME="fwdeploy"
+
