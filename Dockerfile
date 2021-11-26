@@ -39,5 +39,5 @@ RUN cd /home/fwdeploy/flashrom && \
 	git checkout v1.2 && \
 	make install
 
-COPY scripts/fwdeploy.sh /usr/bin/fwdeploy
-CMD /usr/bin/fwdeploy
+COPY scripts/extract_image.sh /usr/bin/extract_image
+CMD /usr/bin/extract_image
