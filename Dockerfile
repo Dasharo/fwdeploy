@@ -2,13 +2,19 @@ FROM debian:testing
 MAINTAINER Piotr Król <piotr.krol@3mdeb.com>
 
 RUN apt-get update && apt-get install -y \
-	python \
-	&& \
-	apt-get clean && \
-	rm -rf /var/lib/apt/lists/*
-
-RUN apt-get update && apt-get install -y \
+	acpica-tools \
+	cmake \
+	file \
+	gawk \
+	git \
+	libc6 \
+	libftdi-dev \
+	libpci-dev \
+	libusb-1.0.0-dev \
 	pip \
+	python3 \
+	qtbase5-dev \
+	zip \
 	&& \
 	apt-get clean && \
 	rm -rf /var/lib/apt/lists/*
@@ -17,27 +23,17 @@ RUN pip install \
 	uefi-firmware \
 	binwalk
 
-RUN apt-get update && apt-get install -y \
-	git \
-	&& \
-	apt-get clean && \
-	rm -rf /var/lib/apt/lists/*
-
 RUN mkdir -p /home/fwdeploy && cd /home/fwdeploy
 WORKDIR /home/fwdeploy
 
-RUN apt-get update && apt-get install -y \
-	libc6 \
-	libpci-dev \
-	libusb-1.0.0-dev \
-	&& \
-	apt-get clean && \
-	rm -rf /var/lib/apt/lists/*
 RUN git clone https://github.com/flashrom/flashrom.git
+RUN git clone https://github.com/LongSoft/UEFITool.git -b new_engine
 
 RUN cd /home/fwdeploy/flashrom && \
-	git checkout v1.2 && \
 	make install
 
+RUN cd /home/fwdeploy/UEFITool && \
+	./unixbuild.sh
+
 COPY scripts/extract_image.sh /usr/bin/extract_image
-CMD /usr/bin/extract_image
+ENTRYPOINT ["/usr/bin/extract_image"]

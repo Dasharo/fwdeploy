@@ -1,16 +1,13 @@
-#!/bin/sh
+#!/bin/bash -x
 
 image="${1}"
 
 ( [ "${image}" == "" ] || [ ! -f "${image}" ] ) && \
  echo "Usage: ./extract_image.sh <image>" && exit 1
 
-set -e
-which uefiextract >/dev/null
-which acpibin >/dev/null
-set +e
+uefiextract=/home/fwdeploy/UEFITool/UEFIExtract/UEFIExtract
 
-uefiextract "${image}" unpack
+${uefiextract} "${image}" unpack
 rm "${image}.report.txt"
 cd "${image}.dump/"
 
