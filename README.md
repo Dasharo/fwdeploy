@@ -18,9 +18,7 @@ docker pull dasharo/fwdeploy
 ## Usage
 
 ```
-#TODO: wrap that in single simple command
-#TODO: script should receive parameters similar to flashrom
-docker run --rm --privileged -it -v $PWD/<dasharo_fimware.img>:/tmp/<dasharo_fimware.img> 3mdeb/fwdeploy flash <dasharo_fimware.img>
+./run.sh <image>
 ```
 
 The container inside must run as root, thus the Dockerfile uses the root user.
