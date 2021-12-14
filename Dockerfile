@@ -28,12 +28,18 @@ WORKDIR /home/fwdeploy
 
 RUN git clone https://github.com/flashrom/flashrom.git
 RUN git clone https://github.com/LongSoft/UEFITool.git -b new_engine
+RUN git clone https://github.com/dasharo/coreboot.git -b dell_optiplex_9010/release && \
+	cd coreboot && \
+	git submodule update --init --recursive --checkout
 
 RUN cd /home/fwdeploy/flashrom && \
 	make install
 
 RUN cd /home/fwdeploy/UEFITool && \
 	./unixbuild.sh
+
+RUN cd /home/fwdeploy/coreboot && \
+	make -C util/cbfstool
 
 COPY scripts/extract_image.sh /usr/bin/extract_image
 COPY blobs /home/fwdeploy/blobs
