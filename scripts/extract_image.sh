@@ -1,5 +1,8 @@
 #!/bin/bash -x
 
+ACM_BIOS_GUID="2D27C618-7DCD-41F5-BB10-21166BE7E143"
+SCH5545_EC_FW="D386BEB8-4B54-4E69-94F5-06091F67E0D3"
+
 image="${1}"
 
 ( [ "${image}" == "" ] || [ ! -f "${image}" ] ) && \
@@ -7,36 +10,15 @@ image="${1}"
 
 uefiextract=/home/fwdeploy/UEFITool/UEFIExtract/UEFIExtract
 
-${uefiextract} "${image}" unpack
-rm "${image}.report.txt"
-cd "${image}.dump/"
+${uefiextract} "${image}" ${ACM_BIOS_GUID} -o acm_bios -m body
+cp acm_bios/body.bin txt_bios_acm.bin
+${uefiextract} "${image}" ${SCH5545_EC_FW} -o ec -m body
+cp ec/body.bin sch5545_ecfw.bin
 
-find . -regextype awk \
- \( -not -regex "./(File|Section)_(TE|PE32|Raw)_.*" -a \
-    -not -regex "./.*?Pad(ding)?_Non-empty.*" \
-    -o -name "*.txt" -o -name "*_header.bin" \
- \) -delete
+# get descriptor, me, gbe
+${uefiextract} "${image}" all
+cp ${image}.dump/0\ Descriptor\ region/body.bin descriptor.bin
+cp ${image}.dump/2\ ME\ region/body.bin me.bin
+cp ${image}.dump/1\ GbE\ region/body.bin gbe.bin
 
-mkdir acpi/
-for i in Section_Raw_*.bin; do
- header="$(acpibin -h ${i} | tr -d ' ')"
- sig="$(grep -oP '(?<=Signature:)\w+'  <<< ${header})"
- oid="$(grep -oP '(?<=OEMID:)\w+'      <<< ${header})"
- tid="$(grep -oP '(?<=OEMTableID:)\w+' <<< ${header})"
-
- [[ "${sig}" == "" || "${header}" =~ "invalid" ]] && continue
- [[ "${tid}" =~ "${oid}" ]] && oid=""
-
- name="${sig}${oid:+_${oid}}${tid:+_${tid}}"
- iasl -p ${name}.dsl ${i} && mv --backup=numbered ${name}.dsl acpi/ && rm ${i}
-done
-
-ls Section_{PE32,TE}_image_*.bin | \
- gawk 'match($0, /^Section_([^_]+)_image_([A-F0-9-]+)_(.*)_body.bin$/, a) { print $0 " " a[3]"_"a[1]"_"a[2]".bin" }' | \
- xargs -n2 mv
-
-mkdir x32/ x64/ raw/
-mv *_TE_*.bin x32/
-file *.bin | grep x86-64 | cut -d: -f1 | xargs -i mv {} x64/
-file *.bin | grep 80386  | cut -d: -f1 | xargs -i mv {} x32/
-mv *.bin raw/
+sha256sum -c /home/fwdeploy/blobs/dell_optiplex_9010.sha256

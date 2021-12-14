@@ -36,4 +36,5 @@ RUN cd /home/fwdeploy/UEFITool && \
 	./unixbuild.sh
 
 COPY scripts/extract_image.sh /usr/bin/extract_image
+COPY blobs /home/fwdeploy/blobs
 ENTRYPOINT ["/usr/bin/extract_image"]
