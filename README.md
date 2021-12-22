@@ -9,24 +9,30 @@ tools and other packages on the system required to deploy Dasharo firmware. It
 also helps in avoiding legal problem of dealing with binary blobs necessary to
 boot the platform.
 
-## Pull docker image
+## Usage
 
 [Install Docker](https://docs.docker.com/engine/install/), if it is not yet in
 the system.
 
+Before using `fwdeploy` you have to backup your original BIOS. How to do that
+is left to the user, since procedure is hardware-specific.
+
+### BIOS backup
+
+* [Dell OptiPlex 7010/9010 SFF](https://docs.dasharo.com/variants/dell_optiplex/installation-manual/#install-flashrom)
+
+### Include non-redistributable blobs
+
+```shell
+wget https://raw.githubusercontent.com/Dasharo/fwdeploy/main/run.sh
+./run.sh <bios_backup> <dasharo_dell_optiplex_firmware_binary>
+```
+
+## Pull docker image
+
 ```
 docker pull dasharo/fwdeploy
 ```
-
-## Usage
-
-```
-./run.sh <image>
-```
-
-The container inside must run as root, thus the Dockerfile uses the root user.
-Host also have to expose SPI host controlled which will be used for firmware
-deployment.
 
 ## Build Docker image
 
