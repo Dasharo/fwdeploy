@@ -11,6 +11,9 @@ boot the platform.
 
 ## Pull docker image
 
+[Install Docker](https://docs.docker.com/engine/install/), if it is not yet in
+the system.
+
 ```
 docker pull dasharo/fwdeploy
 ```
