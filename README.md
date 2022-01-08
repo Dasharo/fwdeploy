@@ -19,7 +19,7 @@ is left to the user, since procedure is hardware-specific.
 
 ### BIOS backup
 
-* [Dell OptiPlex 7010/9010 SFF](https://docs.dasharo.com/variants/dell_optiplex/installation-manual/#install-flashrom)
+* [Dell OptiPlex 7010/9010 SFF](https://docs.dasharo.com/variants/dell_optiplex/initial-deployment/#flashrom-installation)
 
 ### Include non-redistributable blobs
 
